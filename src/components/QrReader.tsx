@@ -2,7 +2,10 @@
 
 import QrScanner from "qr-scanner";
 import { useRef, useEffect, useState } from "react";
+import { useQr, qrState } from "@/store/Qr";
+
 import QrFrame from "@/assets/qr-frame.svg";
+import { useRouter } from "next/navigation";
 
 export default function QrReader() {
   const scanner = useRef<QrScanner>();
@@ -10,11 +13,13 @@ export default function QrReader() {
   const qrBoxEl = useRef<HTMLDivElement>(null);
   const [qrOn, setQrOn] = useState<boolean>(false);
 
-  const [scannedResult, setScannedResult] = useState<string | undefined>("");
+  const { setResult } = useQr() as qrState;
+
+  const router = useRouter();
 
   const onScanSuccess = (result: QrScanner.ScanResult) => {
-    console.log(result);
-    setScannedResult(result?.data);
+    setResult(result.data);
+    router.push("/puntos/cargar");
   };
 
   const onScanFail = (err: string | Error) => {
@@ -72,11 +77,6 @@ export default function QrReader() {
           className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2"
         />
       </div>
-      {scannedResult && (
-        <div className="absolute bottom-0 left-0 right-0 bg-white p-4">
-          <p>{scannedResult}</p>
-        </div>
-      )}
     </div>
   );
 }
