@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Fredoka } from "next/font/google";
 import "./globals.css";
+import Navigation from "@/components/Navigation";
 
-const inter = Inter({ subsets: ["latin"] });
+const typography = Fredoka({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Como Ovillo al Dedo - Sistema de puntos",
@@ -16,7 +17,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es">
-      <body className={inter.className}>{children}</body>
+      <body className={typography.className}>
+        <Navigation />
+        {children}
+      </body>
     </html>
   );
 }
