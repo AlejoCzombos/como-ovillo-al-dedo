@@ -1,6 +1,6 @@
 "use client";
 
-import { qrState, useQr } from "@/store/Qr";
+import { qrState, useQr } from "@/lib/store/Qr";
 
 export default function CargarPuntos() {
   const { result } = useQr() as qrState;

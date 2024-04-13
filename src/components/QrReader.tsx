@@ -2,7 +2,7 @@
 
 import QrScanner from "qr-scanner";
 import { useRef, useEffect, useState } from "react";
-import { useQr, qrState } from "@/store/Qr";
+import { useQr, qrState } from "@/lib/store/Qr";
 
 import QrFrame from "@/assets/qr-frame.svg";
 import { useRouter } from "next/navigation";
