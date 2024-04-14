@@ -1,31 +1,34 @@
 import { NextResponse } from "next/server"
 import app from "@/lib/firebase/firebase"
-import { getFirestore, collection, getDocs, getDoc, updateDoc, doc, runTransaction } from "firebase/firestore"
+import { getFirestore, collection, getDocs, getDoc, updateDoc, doc, runTransaction, deleteDoc } from "firebase/firestore"
 
 const db = getFirestore(app)
 
 export async function GET() {
-  const snapshot = await getDocs(collection(db, "clientes"))
-  const clientes = snapshot.docs.map(doc => doc.data())
-  return NextResponse.json(clientes)
+  try{
+    const snapshot = await getDocs(collection(db, "clientes"))
+    const clientes = snapshot.docs.map(doc => doc.data())
+    return NextResponse.json(clientes, { status: 200 })
+  }catch(e){
+    console.log('Error:', e)
+    return NextResponse.json({ message: 'Error al obtener los clientes' }, { status: 500 })
+  }
 }
 
 export async function POST(request: Request) {
   const body = await request.json()
     
-  //Transacción para incrementar el id del cliente
+  //Transacción para incrementar el id del cliente y de la metadata
   try {
     await runTransaction(db, async (transaction) => {
       const metadataId = doc(db, "metadata/cliente_id")
       const nextId = await transaction.get(metadataId)
 
       const newId = (nextId.data()?.ultimo || 0) + 1
-
-      console.log('NextId:', nextId.data()?.ultimo)
-      console.log('NextId:', newId)
       
       const client = {
         ...body,
+        puntos: 0,
         id: newId
       }
 
@@ -34,27 +37,11 @@ export async function POST(request: Request) {
       await transaction.update(metadataId, {
         ultimo: newId
       })
-
-      console.log('Client:', client)
     });
-    console.log('Transaction success!')
+    return NextResponse.json({ message: 'Cliente creado' }, { status: 201 })
   }catch (e) {
     console.log('Transaction failure:', e)
+    return NextResponse.json({ message: 'Error al crear el cliente' }, { status: 500 })
   }
-
-  
-  
-  //console.log(body)
-  return NextResponse.json({ name: 'John Doe' })
-}
-
-export async function PUT(request: Request) {
-  console.log("PUT")
-  return Response.json({ name: 'John Doe' })
-}
-
-export async function DELETE(request: Request) {
-  console.log("DELETE")
-  return Response.json({ name: 'John Doe' })
 }
 
