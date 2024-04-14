@@ -4,7 +4,6 @@ import QrScanner from "qr-scanner";
 import { useRef, useEffect, useState } from "react";
 import { useQr, qrState } from "@/lib/store/Qr";
 
-import QrFrame from "@/assets/qr-frame.svg";
 import { useRouter } from "next/navigation";
 
 export default function QrReader() {
@@ -72,7 +71,7 @@ export default function QrReader() {
       <video className="w-full h-full object-cover" ref={videoEl}></video>
       <div ref={qrBoxEl}>
         <img
-          src={QrFrame}
+          src="/qr-frame.svg"
           alt="Qr Frame"
           className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2"
         />
