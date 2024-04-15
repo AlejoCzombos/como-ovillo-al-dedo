@@ -12,27 +12,18 @@ export default function QrReader() {
   const qrBoxEl = useRef<HTMLDivElement>(null);
   const [qrOn, setQrOn] = useState<boolean>(false);
 
-  const { setResult } = useQr() as qrState;
+  const { setResult, setIsOpen } = useQr() as qrState;
 
   const router = useRouter();
 
   const onScanSuccess = (result: QrScanner.ScanResult) => {
     setResult(result.data);
-    router.push("/puntos/cargar");
+    setIsOpen(false);
+    console.log(result.data);
   };
 
   const onScanFail = (err: string | Error) => {
     console.log(err);
-  };
-
-  const toggleQrScanner = () => {
-    if (qrOn) {
-      scanner?.current?.stop();
-      setQrOn(false);
-    } else {
-      scanner?.current?.start();
-      setQrOn(true);
-    }
   };
 
   useEffect(() => {
@@ -62,12 +53,6 @@ export default function QrReader() {
 
   return (
     <div className="max-w-lg h-full relative aspect-square">
-      <button
-        onClick={toggleQrScanner}
-        className="py-2 px-4 bg-secondary-500 rounded-xl text-white hover:bg-secondary-600"
-      >
-        {qrOn ? "Stop" : "Start"} QR Scanner
-      </button>
       <video className="w-full h-full object-cover" ref={videoEl}></video>
       <div ref={qrBoxEl}>
         <img
