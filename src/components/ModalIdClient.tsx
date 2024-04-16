@@ -41,7 +41,7 @@ export default function ModalIdClient({
         className="bg-secondary-700 rounded-lg w-[80%] max-w-xl p-5 shadow-lg text-white"
       >
         <div className="flex flex-col gap-1">
-          <label className="font-semibold text-lg">Numero de Cliente:</label>
+          <label className="text-lg">Numero de Cliente:</label>
           <input
             autoFocus
             type="number"
