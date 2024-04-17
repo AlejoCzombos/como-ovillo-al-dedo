@@ -1,11 +1,16 @@
 import { NextResponse } from "next/server"
 import app from "@/lib/firebase/firebase"
-import { getFirestore, collection, getDocs, getDoc, updateDoc, doc, runTransaction, deleteDoc } from "firebase/firestore"
+import { getFirestore, collection, getDocs, doc, runTransaction } from "firebase/firestore"
+import { validatePassword } from "@/utils/password-validation";
 
 const db = getFirestore(app)
 
-export async function GET() {
+export async function GET(request: Request) {
   try{
+    if (!await validatePassword(request)) {
+      return NextResponse.json({ message: "Contraseña incorrecta" }, { status: 401 });
+    }
+    validatePassword(request)
     const snapshot = await getDocs(collection(db, "clientes"))
     const clientes = snapshot.docs.map(doc => doc.data())
     return NextResponse.json(clientes, { status: 200 })
@@ -16,10 +21,13 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-  const body = await request.json()
-    
   //Transacción para incrementar el id del cliente y de la metadata
   try {
+    if (!await validatePassword(request)) {
+      return NextResponse.json({ message: "Contraseña incorrecta" }, { status: 401 });
+    }
+    const body = await request.json()
+
     await runTransaction(db, async (transaction) => {
       const metadataId = doc(db, "metadata/cliente_id")
       const nextId = await transaction.get(metadataId)
@@ -44,4 +52,3 @@ export async function POST(request: Request) {
     return NextResponse.json({ message: 'Error al crear el cliente' }, { status: 500 })
   }
 }
-

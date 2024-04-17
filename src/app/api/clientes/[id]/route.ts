@@ -1,11 +1,16 @@
 import { NextResponse } from "next/server"
 import app from "@/lib/firebase/firebase"
 import { getFirestore, getDoc, updateDoc, doc, deleteDoc } from "firebase/firestore"
+import { validatePassword } from "@/utils/password-validation";
+
 
 const db = getFirestore(app)
 
 export async function GET(request: Request, {params} : {params: {id: string}}) {
   try{
+    if (!await validatePassword(request)) {
+      return NextResponse.json({ message: "Contraseña incorrecta" }, { status: 401 });
+    }
     const clientRef = doc(db, `clientes/${params.id}`)
     const clientSnapshot = await getDoc(clientRef)
 
@@ -27,6 +32,9 @@ export async function PUT(request: Request, {params} : {params: {id: string}}) {
   const clientId = params.id
 
   try {
+    if (!await validatePassword(request)) {
+      return NextResponse.json({ message: "Contraseña incorrecta" }, { status: 401 });
+    }
     const clientRef = doc(db, `clientes/${clientId}`)
     const client = await getDoc(clientRef)
 
@@ -46,6 +54,9 @@ export async function DELETE(request: Request, {params} : {params: {id: string}}
   const clientId = params.id
 
   try{
+    if (!await validatePassword(request)) {
+      return NextResponse.json({ message: "Contraseña incorrecta" }, { status: 401 });
+    }
     const clientRef = doc(db, `clientes/${clientId}`)
     const client = await getDoc(clientRef)
 
