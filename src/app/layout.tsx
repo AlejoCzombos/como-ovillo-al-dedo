@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   description: "Sistema de puntos para la tienda Como Ovillo al Dedo",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
@@ -21,8 +21,8 @@ export default function RootLayout({
       <body className={typography.className}>
         <Navigation />
         {children}
+        <Toaster toastOptions={{ style: { textAlign: "center" } }} />
       </body>
-      <Toaster toastOptions={{ style: { textAlign: "center" } }} />
     </html>
   );
 }
