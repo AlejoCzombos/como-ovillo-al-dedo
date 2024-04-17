@@ -19,24 +19,37 @@ export default function CargarPuntos() {
     e.preventDefault();
     const form = e.currentTarget;
     const totalSale = form.totalSale.value;
+    const password = form.password.value;
 
-    const data = fetch("/api/clientes/puntos/cargar", {
-      method: "POST",
-      body: JSON.stringify({ monto: totalSale, cliente_id: result }),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    console.log(totalSale, password);
 
-    toast.promise(
-      data.then((res) => res.json()),
+    const toastPromise = toast.loading("Cargando puntos...");
+    const data = await fetch(
+      `/api/clientes/puntos/cargar?password=${password}`,
       {
-        loading: "Cargando puntos...",
-        success: (data) =>
-          `Puntos cargados\nPuntos actuales: ${data.puntosActuales}`,
-        error: "Error al cargar los puntos",
+        method: "POST",
+        body: JSON.stringify({ monto: totalSale, cliente_id: result }),
+        headers: {
+          "Content-Type": "application/json",
+        },
       }
     );
+
+    const response = await data.json();
+    if (data.status === 200) {
+      toast.success(
+        `Puntos cargados\nPuntos totales: ${response.puntosTotales}`,
+        {
+          id: toastPromise,
+        }
+      );
+    } else if (data.status === 401) {
+      toast.error("Contraseña incorrecta", { id: toastPromise });
+    } else if (data.status === 404) {
+      toast.error("El cliente no existe", { id: toastPromise });
+    } else {
+      toast.error("Error al cargar los puntos", { id: toastPromise });
+    }
 
     setResult("");
     form.reset();
@@ -59,15 +72,25 @@ export default function CargarPuntos() {
       {result && (
         <form
           onSubmit={handleSubmit}
-          className="flex flex-col items-center justify-center gap-8 w-full max-w-md px-5 sm:px-0"
+          className="flex flex-col items-center justify-center gap-2 w-full max-w-md px-5 sm:px-0"
         >
-          <div className="w-full p-2 text-2xl">
+          <div className="w-full text-2xl">
             <label className="text-white" htmlFor="totalSale">
               Monto de la venta:
             </label>
             <input
               type="number"
               id="totalSale"
+              className="w-full p-2 bg-secondary-100 rounded-xl"
+            />
+          </div>
+          <div className="w-full text-2xl mb-4">
+            <label className="text-white" htmlFor="password">
+              Contraseña:
+            </label>
+            <input
+              type="password"
+              id="password"
               className="w-full p-2 bg-secondary-100 rounded-xl"
             />
           </div>
