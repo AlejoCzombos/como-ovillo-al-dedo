@@ -36,7 +36,7 @@ export default function CanjearPuntos() {
     const response = await data.json();
     if (data.status === 200) {
       toast.success(
-        `Puntos cargados\nPuntos restantes: ${response.puntosActuales}`,
+        `Puntos cargados\nPuntos restantes: ${response.puntosTotales}`,
         {
           id: toastPromise,
         }

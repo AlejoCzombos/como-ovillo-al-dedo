@@ -21,8 +21,6 @@ export default function CargarPuntos() {
     const totalSale = form.totalSale.value;
     const password = form.password.value;
 
-    console.log(totalSale, password);
-
     const toastPromise = toast.loading("Cargando puntos...");
     const data = await fetch(
       `/api/clientes/puntos/cargar?password=${password}`,
@@ -38,7 +36,7 @@ export default function CargarPuntos() {
     const response = await data.json();
     if (data.status === 200) {
       toast.success(
-        `Puntos cargados\nPuntos totales: ${response.puntosTotales}`,
+        `Puntos cargados\nPuntos totales: ${response.puntosActuales}`,
         {
           id: toastPromise,
         }
