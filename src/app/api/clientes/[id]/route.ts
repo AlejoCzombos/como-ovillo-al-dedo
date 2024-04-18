@@ -8,9 +8,6 @@ const db = getFirestore(app)
 
 export async function GET(request: Request, {params} : {params: {id: string}}) {
   try{
-    if (!await validatePassword(request)) {
-      return NextResponse.json({ message: "Contraseña incorrecta" }, { status: 401 });
-    }
     const clientRef = doc(db, `clientes/${params.id}`)
     const clientSnapshot = await getDoc(clientRef)
 
@@ -19,7 +16,13 @@ export async function GET(request: Request, {params} : {params: {id: string}}) {
     }
 
     const clientData = clientSnapshot.data();
-    return NextResponse.json(clientData, { status: 200 })
+
+    const clientResponse = {
+      firstname: clientData.nombre,
+      points: clientData.puntos
+    }
+
+    return NextResponse.json(clientResponse, { status: 200 })
   }catch(e){
     console.log('Error:', e)
     return NextResponse.json({ message: 'Error al obtener el cliente' }, { status: 500 })
