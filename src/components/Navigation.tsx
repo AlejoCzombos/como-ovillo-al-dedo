@@ -3,20 +3,26 @@
 import Image from "next/image";
 import Link from "next/link";
 import logo from "../../public/logo.png";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 export default function Navigation() {
   const pathName = usePathname();
+  const route = useRouter();
+
+  const handleGoBack = () => {
+    route.back();
+  };
+
   return (
     <nav className="sticky top-0 z-20 w-full shadow-md bg-white h-24 flex max-w-6xl items-center justify-start">
       {pathName !== "/" && (
-        <Link href="/">
+        <button onClick={handleGoBack}>
           <img
             src="/BackIcon.svg"
             alt="Volver al menu"
             className="size-10 -rotate-90 cursor-pointer hover:scale-125 transform transition-transform ease-in-out duration-300"
           />
-        </Link>
+        </button>
       )}
       <Link
         href="/"
