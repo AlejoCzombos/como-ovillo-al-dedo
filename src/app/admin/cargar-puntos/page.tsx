@@ -92,7 +92,7 @@ export default function CargarPuntos() {
             <input
               type="password"
               id="password"
-              className="w-full p-2 bg-secondary-100 rounded-xl"
+              className="w-full p-2 bg-secondary-200 border-white border-2 rounded-xl"
             />
           </div>
           <BigButton text="CARGAR PUNTOS" />
