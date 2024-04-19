@@ -145,7 +145,7 @@ export default function CrearCliente() {
           <input
             type="password"
             id="password"
-            className="w-full p-2 bg-secondary-300 border-white border-2 rounded-xl"
+            className="w-full p-2 bg-secondary-200 border-white border-2 rounded-xl"
           />
         </div>
         <BigButton text="CREAR CLIENTE"></BigButton>
