@@ -19,7 +19,6 @@ export default function QrReader() {
   const onScanSuccess = (result: QrScanner.ScanResult) => {
     setResult(result.data);
     setIsOpen(false);
-    console.log(result.data);
   };
 
   const onScanFail = (err: string | Error) => {
