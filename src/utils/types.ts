@@ -1,12 +1,12 @@
 interface Localizacion {
   ciudad: string;
-  codigo_postal: string;
+  codigo_postal: number;
   direccion: string;
   pais: string;
 }
 
 interface Cliente {
-  DNI: string;
+  DNI: number;
   apellido: string;
   celular: string;
   correo: string;
