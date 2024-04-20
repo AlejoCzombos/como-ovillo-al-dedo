@@ -1,21 +1,42 @@
 "use client";
 
 import BigButton from "@/components/BigButton";
+import Input from "@/components/Input";
 import toast from "react-hot-toast";
+import { useForm, FormProvider, SubmitHandler } from "react-hook-form";
+import { redirect, useRouter } from "next/navigation";
+
+type FormValues = {
+  firstname: string;
+  lastName: string;
+  DNI: number;
+  email: string;
+  phone: string;
+  address: string;
+  city: string;
+  postcode: number;
+  password: string;
+};
 
 export default function CrearCliente() {
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const form = e.currentTarget;
-    const firstname = form.firstname.value;
-    const lastName = form.lastName.value;
-    const DNI = form.DNI.value;
-    const email = form.email.value;
-    const phone = form.phone.value;
-    const address = form.address.value;
-    const city = form.city.value;
-    const postcode = form.postcode.value;
-    const password = form.password.value;
+  const methods = useForm<FormValues>();
+  const { handleSubmit, reset } = methods;
+  const router = useRouter();
+
+  const onSubmit: SubmitHandler<FormValues> = async (data) => {
+    console.log(data);
+
+    const {
+      firstname,
+      lastName,
+      DNI,
+      email,
+      phone,
+      address,
+      city,
+      postcode,
+      password,
+    } = data;
 
     const clientData = {
       nombre: firstname,
@@ -32,7 +53,7 @@ export default function CrearCliente() {
 
     const toastPromise = toast.loading("Creando cliente...");
 
-    const data = await fetch(`/api/clientes?password=${password}`, {
+    const response = await fetch(`/api/clientes?password=${password}`, {
       method: "POST",
       body: JSON.stringify(clientData),
       headers: {
@@ -40,116 +61,89 @@ export default function CrearCliente() {
       },
     });
 
-    if (data.status === 201) {
+    if (response.status === 201) {
       toast.success("Cliente creado", { id: toastPromise });
-      form.reset();
-    } else if (data.status === 401) {
+      router.push("/admin/clientes");
+    } else if (response.status === 401) {
       toast.error("Contraseña incorrecta", { id: toastPromise });
     } else {
       toast.error("Error al crear el cliente", { id: toastPromise });
     }
   };
   return (
-    <main className="min-h-[85vh] w-full m-auto py-5">
-      <h2 className="text-4xl text-center w-[80%] text-white font-semibold m-auto py-5">
-        Crear Cliente
-      </h2>
-      <form
-        className="flex flex-col justify-center gap-4 w-[80%] m-auto"
-        onSubmit={handleSubmit}
-      >
-        <div className="w-full text-2xl">
-          <label className="text-white" htmlFor="firstname">
-            Nombre:
-          </label>
-          <input
-            type="text"
-            id="firstname"
-            className="w-full p-2 bg-secondary-100 rounded-xl"
+    <FormProvider {...methods}>
+      <main className="min-h-[85vh] w-full m-auto py-5">
+        <h2 className="text-4xl text-center w-[80%] text-white font-semibold m-auto py-5">
+          Crear Cliente
+        </h2>
+        <form
+          className="flex flex-col justify-center gap-4 w-[80%] m-auto"
+          onSubmit={handleSubmit(onSubmit)}
+        >
+          <Input
+            label="Nombre"
+            name="firstname"
+            rules={{ required: "Este campo es requerido" }}
           />
-        </div>
-        <div className="w-full text-2xl">
-          <label className="text-white" htmlFor="lastName">
-            Apellido:
-          </label>
-          <input
-            type="text"
-            id="lastName"
-            className="w-full p-2 bg-secondary-100 rounded-xl"
+          <Input
+            label="Apellido"
+            name="lastName"
+            rules={{ required: "Este campo es requerido" }}
           />
-        </div>
-        <div className="w-full text-2xl">
-          <label className="text-white" htmlFor="DNI">
-            DNI:
-          </label>
-          <input
+          <Input
+            label="DNI"
+            name="DNI"
             type="number"
-            id="DNI"
-            className="w-full p-2 bg-secondary-100 rounded-xl"
+            rules={{
+              required: "Este campo es requerido",
+              minLength: {
+                value: 7,
+                message: "El DNI debe tener al menos 7 dígitos",
+              },
+              maxLength: {
+                value: 8,
+                message: "El DNI debe tener como máximo 8 dígitos",
+              },
+            }}
           />
-        </div>
-        <div className="w-full text-2xl">
-          <label className="text-white" htmlFor="email">
-            Email:
-          </label>
-          <input
+          <Input
+            label="Email"
+            name="email"
             type="email"
-            id="email"
-            className="w-full p-2 bg-secondary-100 rounded-xl"
+            rules={{
+              required: "Este campo es requerido",
+              pattern: { value: /^\S+@\S+$/i, message: "Email inválido" },
+            }}
           />
-        </div>
-        <div className="w-full text-2xl">
-          <label className="text-white" htmlFor="phone">
-            Teléfono:
-          </label>
-          <input
-            type="tel"
-            id="phone"
-            className="w-full p-2 bg-secondary-100 rounded-xl"
-          />
-        </div>
-        <div className="w-full text-2xl">
-          <label className="text-white" htmlFor="address">
-            Dirección:
-          </label>
-          <input
-            type="text"
-            id="address"
-            className="w-full p-2 bg-secondary-100 rounded-xl"
-          />
-        </div>
-        <div className="w-full text-2xl">
-          <label className="text-white" htmlFor="city">
-            Ciudad:
-          </label>
-          <input
-            type="text"
-            id="city"
-            className="w-full p-2 bg-secondary-100 rounded-xl"
-          />
-        </div>
-        <div className="w-full text-2xl">
-          <label className="text-white" htmlFor="postcode">
-            Código Postal:
-          </label>
-          <input
+          <Input label="Teléfono" name="phone" type="number" />
+          <Input label="Dirección" name="address" />
+          <Input label="Ciudad" name="city" />
+          <Input
+            label="Código Postal"
+            name="postcode"
             type="number"
-            id="postcode"
-            className="w-full p-2 bg-secondary-100 rounded-xl"
+            rules={{
+              required: "Este campo es requerido",
+              minLength: {
+                value: 4,
+                message: "El código postal debe tener al menos 4 dígitos",
+              },
+              maxLength: {
+                value: 5,
+                message: "El código postal debe tener exactamente 5 dígitos",
+              },
+            }}
           />
-        </div>
-        <div className="w-full text-2xl">
-          <label className="text-white" htmlFor="password">
-            Contraseña:
-          </label>
-          <input
+          <Input
+            label="Contraseña"
+            name="password"
             type="password"
-            id="password"
-            className="w-full p-2 bg-secondary-200 border-white border-2 rounded-xl"
+            password
+            rules={{ required: "Este campo es requerido" }}
           />
-        </div>
-        <BigButton text="CREAR CLIENTE"></BigButton>
-      </form>
-    </main>
+          <BigButton text="CREAR CLIENTE" />
+        </form>
+      </main>
+    </FormProvider>
   );
 }
