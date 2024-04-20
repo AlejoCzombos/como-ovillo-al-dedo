@@ -7,6 +7,7 @@ interface InputProps {
   type?: string;
   password?: boolean;
   rules?: any;
+  isDisabled?: boolean;
 }
 
 const Input: React.FC<InputProps> = ({
@@ -15,6 +16,7 @@ const Input: React.FC<InputProps> = ({
   type = "text",
   password = false,
   rules,
+  isDisabled = false,
 }) => {
   const { control } = useFormContext();
 
@@ -30,6 +32,7 @@ const Input: React.FC<InputProps> = ({
         render={({ field, fieldState }) => (
           <>
             <input
+              disabled={isDisabled}
               {...field}
               type={type}
               id={name}
