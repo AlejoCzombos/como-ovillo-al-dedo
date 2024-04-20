@@ -26,7 +26,6 @@ export default function VerPuntos() {
         id: toastPromise,
       });
       setClient(response);
-      console.log(response);
     } else if (data.status === 404) {
       toast.error("El cliente no existe", { id: toastPromise });
     } else {
