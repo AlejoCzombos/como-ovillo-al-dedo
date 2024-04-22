@@ -10,10 +10,19 @@ export async function GET(request: Request) {
     if (!await validatePassword(request)) {
       return NextResponse.json({ message: "Contraseña incorrecta" }, { status: 401 });
     }
-    validatePassword(request)
     const snapshot = await getDocs(collection(db, "clientes"))
     const clientes = snapshot.docs.map(doc => doc.data())
-    return NextResponse.json(clientes, { status: 200 })
+
+    const clientesResponse = clientes.map(cliente => {
+      return {
+        id: cliente.id,
+        nombre: cliente.nombre,
+        apellido: cliente.apellido,
+        puntos: cliente.puntos
+      }
+    }).sort((a, b) => a.id - b.id)
+
+    return NextResponse.json(clientesResponse, { status: 200 })
   }catch(e){
     console.log('Error:', e)
     return NextResponse.json({ message: 'Error al obtener los clientes' }, { status: 500 })
