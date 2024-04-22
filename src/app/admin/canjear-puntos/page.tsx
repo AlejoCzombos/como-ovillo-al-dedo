@@ -6,6 +6,7 @@ import BigButton from "@/components/BigButton";
 import { qrState, useQr } from "@/lib/store/Qr";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import UpdatePointsForm from "@/components/UpdatePointForm";
 
 export default function CanjearPuntos() {
   const { result, setIsOpen, isOpen, setResult } = useQr() as qrState;
@@ -15,18 +16,15 @@ export default function CanjearPuntos() {
     setIsOpen(true);
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const form = e.currentTarget;
-    const totalPoints = form.totalPoints.value;
-    const password = form.password.value;
+  const handleSubmit = async (formData: UpdatePointsForm) => {
+    const { amount, password } = formData;
 
     const toastPromise = toast.loading("Cargando puntos...");
     const data = await fetch(
       `/api/clientes/puntos/canjear?password=${password}`,
       {
         method: "POST",
-        body: JSON.stringify({ puntos: totalPoints, cliente_id: result }),
+        body: JSON.stringify({ puntos: amount, cliente_id: result }),
         headers: {
           "Content-Type": "application/json",
         },
@@ -52,7 +50,6 @@ export default function CanjearPuntos() {
     }
 
     setResult("");
-    form.reset();
   };
 
   return (
@@ -70,32 +67,11 @@ export default function CanjearPuntos() {
         </section>
       )}
       {result && (
-        <form
+        <UpdatePointsForm
+          labelTitule="Puntos a canjear"
+          buttonLabel="CANJEAR PUNTOS"
           onSubmit={handleSubmit}
-          className="flex flex-col items-center justify-center gap-2 w-full max-w-md px-5 sm:px-0"
-        >
-          <div className="w-full text-2xl">
-            <label className="text-white" htmlFor="totalPoints">
-              Puntos a canjear:
-            </label>
-            <input
-              type="number"
-              id="totalPoints"
-              className="w-full p-2 bg-secondary-100 rounded-xl"
-            />
-          </div>
-          <div className="w-full text-2xl mb-4">
-            <label className="text-white" htmlFor="password">
-              Contraseña:
-            </label>
-            <input
-              type="password"
-              id="password"
-              className="w-full p-2 bg-secondary-200 border-white border-2 rounded-xl"
-            />
-          </div>
-          <BigButton text="CANJEAR PUNTOS" />
-        </form>
+        />
       )}
       {isOpen && <ModalQr />}
       {idClientIsOpen && (

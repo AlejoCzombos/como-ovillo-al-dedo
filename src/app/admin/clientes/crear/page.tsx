@@ -5,6 +5,7 @@ import Input from "@/components/Input";
 import toast from "react-hot-toast";
 import { useForm, FormProvider, SubmitHandler } from "react-hook-form";
 import { redirect, useRouter } from "next/navigation";
+import { createClient } from "@/utils/api.client";
 
 type FormValues = {
   firstname: string;
@@ -53,13 +54,7 @@ export default function CrearCliente() {
 
     const toastPromise = toast.loading("Creando cliente...");
 
-    const response = await fetch(`/api/clientes?password=${password}`, {
-      method: "POST",
-      body: JSON.stringify(clientData),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    const response = await createClient(password, clientData);
 
     if (response.status === 201) {
       toast.success("Cliente creado", { id: toastPromise });

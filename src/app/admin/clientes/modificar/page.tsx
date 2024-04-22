@@ -7,6 +7,7 @@ import toast from "react-hot-toast";
 import { useForm, FormProvider, SubmitHandler } from "react-hook-form";
 import { updateClient } from "@/utils/api.client";
 import { useRouter } from "next/navigation";
+import ClientSearchForm from "@/components/ClientSearchForm";
 
 type FormValues = {
   clientId: number;
@@ -31,9 +32,7 @@ export default function ModificarCliente() {
   const [client, setClient] = useState<Cliente>();
   const [password, setPassword] = useState<string>("");
   const methodsModifyClient = useForm<FormValues>();
-  const methodsFindClient = useForm<FormValuesFindClient>();
   const { handleSubmit: handleSubmitModifyClient } = methodsModifyClient;
-  const { handleSubmit: handleSubmitFindClient } = methodsFindClient;
 
   const router = useRouter();
 
@@ -110,15 +109,13 @@ export default function ModificarCliente() {
     }
   }, [client]);
 
-  const onSubmitFindCLient: SubmitHandler<FormValuesFindClient> = async (
-    formData
-  ) => {
-    const { clientId, passwordFindClient } = formData;
-    setPassword(passwordFindClient);
+  const onSubmitFindCLient = async (formData: ClientSearchForm) => {
+    const { clientId, password } = formData;
+    setPassword(password);
 
     const toastPromise = toast.loading("Buscando cliente...");
     const data = await fetch(
-      `/api/clientes/${clientId}/completo?password=${passwordFindClient}`
+      `/api/clientes/${clientId}/completo?password=${password}`
     );
 
     const response = await data.json();
@@ -127,7 +124,6 @@ export default function ModificarCliente() {
         id: toastPromise,
       });
       setClient(response);
-      console.log(response);
     } else if (data.status === 401) {
       toast.error("Contraseña incorrecta", { id: toastPromise });
     } else if (data.status === 404) {
@@ -142,27 +138,7 @@ export default function ModificarCliente() {
       <h2 className="text-4xl text-center w-[80%] text-white font-semibold absolute top-20 left-1/2 transform -translate-x-1/2">
         Modificar cliente
       </h2>
-      {!client && (
-        <FormProvider {...methodsFindClient}>
-          <form
-            onSubmit={handleSubmitFindClient(onSubmitFindCLient)}
-            className="flex flex-col items-center justify-center gap-3 w-full max-w-md px-5 sm:px-0"
-          >
-            <Input
-              label="Número de Cliente"
-              name="clientId"
-              rules={{ required: "Este campo es requerido" }}
-            />
-            <Input
-              label="Contraseña"
-              name="passwordFindClient"
-              type="password"
-              rules={{ required: "Este campo es requerido" }}
-            />
-            <BigButton text="BUSCAR CLIENTE" className="mt-3" />
-          </form>
-        </FormProvider>
-      )}
+      {!client && <ClientSearchForm onSubmit={onSubmitFindCLient} />}
       {client && (
         <FormProvider {...methodsModifyClient}>
           <form

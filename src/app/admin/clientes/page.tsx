@@ -15,7 +15,7 @@ export default function Home() {
           <BigButton text="MODIFICAR CLIENTE" />
         </Link>
         <Link href="/admin/clientes/listar" className="w-full">
-          <BigButton text="LISTAR CLIENTES" />
+          <BigButton text="LISTA DE CLIENTES" />
         </Link>
       </section>
     </main>
