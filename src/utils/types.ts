@@ -15,3 +15,17 @@ interface Cliente {
   nombre: string;
   puntos: number;
 }
+
+interface passwordForm{
+  password: string;
+}
+
+interface ClientSearchForm{
+  clientId: number;
+  password: string;
+}
+
+interface UpdatePointsForm{
+  amount: number;
+  password: string;
+}
