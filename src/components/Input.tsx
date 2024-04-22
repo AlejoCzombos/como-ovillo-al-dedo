@@ -36,6 +36,7 @@ const Input: React.FC<InputProps> = ({
               {...field}
               type={type}
               id={name}
+              defaultValue={""}
               className={`w-full p-2 bg-secondary-100 rounded-xl ${
                 password ? "bg-secondary-200 border-white border-2" : ""
               } ${fieldState.error ? "border-red-500" : ""}`}
