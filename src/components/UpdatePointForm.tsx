@@ -4,12 +4,14 @@ import BigButton from "./BigButton";
 interface PointsUploadFormProps {
   onSubmit: (formData: UpdatePointsForm) => void;
   labelTitule: string;
+  labelPlaceholder?: string;
   buttonLabel: string;
 }
 
 export default function UpdatePointsForm({
   onSubmit,
   labelTitule,
+  labelPlaceholder,
   buttonLabel,
 }: PointsUploadFormProps) {
   const [amount, setAmount] = useState<number>();
@@ -49,6 +51,7 @@ export default function UpdatePointsForm({
         <input
           type="number"
           id="amount"
+          placeholder={labelPlaceholder}
           value={amount}
           onChange={handleChangeAmount}
           className="w-full p-2 bg-secondary-100 rounded-xl"
