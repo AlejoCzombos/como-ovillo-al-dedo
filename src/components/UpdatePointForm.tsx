@@ -44,7 +44,7 @@ export default function UpdatePointsForm({
     >
       <div className="w-full text-2xl">
         <label className="text-white" htmlFor="amount">
-          {labelTitule}
+          {labelTitule}:
         </label>
         <input
           type="number"
@@ -64,7 +64,7 @@ export default function UpdatePointsForm({
           placeholder="•••••••••"
           value={password}
           onChange={handleChangePassword}
-          className="w-full p-2 bg-secondary-200 border-white border-2 rounded-xl"
+          className="w-full p-2 bg-secondary-100 border-white border-2 rounded-xl text-2xl"
         />
         {error && <p className="text-red-500">{error}</p>}
       </div>

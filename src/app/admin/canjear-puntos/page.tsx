@@ -55,7 +55,7 @@ export default function CanjearPuntos() {
   return (
     <main className="flex justify-center min-h-[85vh] w-full m-auto relative">
       <h2 className="text-4xl text-center w-[80%] text-white font-semibold absolute top-20 left-1/2 transform -translate-x-1/2">
-        Canjeo de Puntos
+        Canjear Puntos
       </h2>
       {!result && (
         <section className="flex flex-col items-center justify-center gap-8 w-full max-w-md px-5 sm:px-0">
@@ -68,7 +68,7 @@ export default function CanjearPuntos() {
       )}
       {result && (
         <UpdatePointsForm
-          labelTitule="Puntos a canjear"
+          labelTitule="Puntos"
           buttonLabel="CANJEAR PUNTOS"
           onSubmit={handleSubmit}
         />

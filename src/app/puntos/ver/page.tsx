@@ -68,8 +68,8 @@ export default function VerPuntos() {
             {client.points} puntos
           </p>
           <p className="text-white text-xl">
-            ¡Seguí comprando para poder sumar mas puntos y asi canjearlos por
-            recompensas!
+            ¡¡¡Seguí comprando para sumar más puntos y así canjearlos por
+            recompensas!!!
           </p>
         </div>
       )}
