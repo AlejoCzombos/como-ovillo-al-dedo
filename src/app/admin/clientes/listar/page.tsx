@@ -65,12 +65,12 @@ export default function ListarClientes() {
                 {clients
                   .filter(
                     (client) =>
-                      (client.nombre
+                      client.nombre
                         ?.toLowerCase()
                         .includes(searchValue.toLowerCase()) ||
-                        client.apellido
-                          ?.toLowerCase()
-                          .includes(searchValue.toLowerCase())) &&
+                      client.apellido
+                        ?.toLowerCase()
+                        .includes(searchValue.toLowerCase()) ||
                       client.id.toString().startsWith(searchValue)
                   )
                   .map((client) => (
