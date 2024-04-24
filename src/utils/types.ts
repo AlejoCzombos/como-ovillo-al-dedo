@@ -29,3 +29,8 @@ interface UpdatePointsForm{
   amount: number;
   password: string;
 }
+
+interface UpdatePointsResponse{
+  currentPoints: number;
+  name: string;
+}
