@@ -38,12 +38,14 @@ export async function POST(request: Request) {
                 return 
             }
 
-            newPoints = client.data().puntos + points
+            newPoints = Math.round(client.data().puntos + points)
 
             await transaction.update(clientRef, { puntos: newPoints })     
         });
 
-        return NextResponse.json({puntosActuales: newPoints}, { status: 200 })
+        const clientName = clientSnapshot.data().nombre
+
+        return NextResponse.json({currentPoints: newPoints, name: clientName}, { status: 200 })
     }catch(e){
         console.log('Error:', e)
         return NextResponse.json({ message: 'Error al obtener los clientes' }, { status: 500 })

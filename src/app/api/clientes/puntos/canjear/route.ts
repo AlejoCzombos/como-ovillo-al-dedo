@@ -29,9 +29,10 @@ export async function POST(request: Request) {
         }
 
         const newPoints = client.data().puntos - points
+        const clientName = client.data().nombre
 
         await updateDoc(clientRef, { puntos: newPoints })
-        return NextResponse.json({ puntosActuales : newPoints }, { status: 200 })
+        return NextResponse.json({ currentPoints : newPoints, name : clientName }, { status: 200 })
     }catch(e){
         console.log('Error:', e)
         return NextResponse.json({ message: 'Error al obtener los clientes' }, { status: 500 })
