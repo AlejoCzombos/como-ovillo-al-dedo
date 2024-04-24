@@ -22,7 +22,7 @@ export const createClient = async (password: string, clientBody: any) => {
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ clientBody }),
+    body: JSON.stringify(clientBody),
   });
   return response;
 };
