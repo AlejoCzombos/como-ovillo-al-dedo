@@ -18,6 +18,7 @@ export default async function RootLayout({
 }>) {
   return (
     <html lang="es">
+      <link rel="icon" href="/favicon.png" sizes="any" />
       <body className={typography.className}>
         <Navigation />
         {children}
