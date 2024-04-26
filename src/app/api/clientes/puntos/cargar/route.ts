@@ -26,21 +26,20 @@ export async function POST(request: Request) {
         
         let newPoints;
         await runTransaction(db, async (transaction) => {
-            const metadataId = doc(db, "metadata/puntos")
-            const pointsMetadata = await transaction.get(metadataId)
+            const metadataRef = doc(db, "metadata/puntos")
+            const pointsMetadata = await transaction.get(metadataRef)
             
             const percentage = (pointsMetadata.data()?.porcentaje) / 100
             const points = amount * percentage
             
             const client = await transaction.get(clientRef)
-            
             if (!client.exists()) {
                 return 
             }
-
+            
             newPoints = Math.round(client.data().puntos + points)
-
-            await transaction.update(clientRef, { puntos: newPoints })     
+            
+            await transaction.update(clientRef, { puntos: newPoints })
         });
 
         const clientName = clientSnapshot.data().nombre

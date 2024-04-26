@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server"
 import app from "@/lib/firebase/firebase"
-import { getFirestore, getDoc, updateDoc, doc, deleteDoc } from "firebase/firestore"
+import { getFirestore, getDoc, updateDoc, doc, deleteDoc, runTransaction } from "firebase/firestore"
 import { validatePassword } from "@/utils/password-validation";
 
 
@@ -46,6 +46,7 @@ export async function PUT(request: Request, {params} : {params: {id: string}}) {
     }
 
     await updateDoc(clientRef, body)
+
     return NextResponse.json({ message: 'Cliente actualizado' }, { status: 200 })
   }catch(e){
     console.log('Error:', e)

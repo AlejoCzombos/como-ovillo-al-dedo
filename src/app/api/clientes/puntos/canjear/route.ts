@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server"
 import app from "@/lib/firebase/firebase"
-import { getFirestore, getDoc, updateDoc, doc } from "firebase/firestore"
+import { getFirestore, getDoc, doc, runTransaction, updateDoc } from "firebase/firestore"
 import { validatePassword } from "@/utils/password-validation";
 
 const db = getFirestore(app)
@@ -30,8 +30,9 @@ export async function POST(request: Request) {
 
         const newPoints = client.data().puntos - points
         const clientName = client.data().nombre
-
+        
         await updateDoc(clientRef, { puntos: newPoints })
+
         return NextResponse.json({ currentPoints : newPoints, name : clientName }, { status: 200 })
     }catch(e){
         console.log('Error:', e)

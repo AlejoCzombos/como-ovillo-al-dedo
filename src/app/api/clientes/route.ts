@@ -50,7 +50,7 @@ export async function POST(request: Request) {
       }
 
       await transaction.set(doc(db, "clientes", newId.toString()), client)
-      
+    
       await transaction.update(metadataId, {
         ultimo: newId
       })
