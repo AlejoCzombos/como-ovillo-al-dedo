@@ -37,8 +37,9 @@ const Input: React.FC<InputProps> = ({
               type={type}
               id={name}
               defaultValue={""}
+              placeholder={password ? "•••••••••" : ""}
               className={`w-full p-2 bg-secondary-100 rounded-xl ${
-                password ? "bg-secondary-200 border-white border-2" : ""
+                password ? "bg-secondary-100 border-secondary-300 border-2" : ""
               } ${fieldState.error ? "border-red-500" : ""}`}
             />
             {fieldState.error && (

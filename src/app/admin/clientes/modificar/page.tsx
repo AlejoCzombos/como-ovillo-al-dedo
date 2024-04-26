@@ -142,7 +142,7 @@ export default function ModificarCliente() {
       {client && (
         <FormProvider {...methodsModifyClient}>
           <form
-            className="flex flex-col justify-center gap-4 w-[80%] m-auto mt-40"
+            className="flex flex-col justify-center gap-4 max-w-2xl w-[80%] m-auto mt-40"
             onSubmit={handleSubmitModifyClient(onSubmit)}
           >
             <div className="flex gap-5">

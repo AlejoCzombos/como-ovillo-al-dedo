@@ -64,7 +64,7 @@ export default function ClientSearchForm({
           type="password"
           placeholder="•••••••••"
           value={password || ""}
-          className="w-full p-2 bg-secondary-100 rounded-xl"
+          className="w-full p-1 px-2 bg-secondary-100 border-secondary-300 border-2 rounded-xl text-3xl"
           onChange={handleChange}
         />
         {error && <p className="text-red-500 text-lg">{error}</p>}

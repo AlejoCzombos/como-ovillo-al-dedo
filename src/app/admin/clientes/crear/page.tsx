@@ -25,8 +25,6 @@ export default function CrearCliente() {
   const router = useRouter();
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
-    console.log(data);
-
     const {
       firstname,
       lastName,
@@ -72,7 +70,7 @@ export default function CrearCliente() {
           Crear Cliente
         </h2>
         <form
-          className="flex flex-col justify-center gap-4 w-[80%] m-auto"
+          className="flex flex-col justify-center gap-4 max-w-2xl w-[80%] m-auto"
           onSubmit={handleSubmit(onSubmit)}
         >
           <Input
@@ -136,7 +134,7 @@ export default function CrearCliente() {
             password
             rules={{ required: "Este campo es requerido" }}
           />
-          <BigButton text="CREAR CLIENTE" />
+          <BigButton text="CREAR CLIENTE" className="mt-3" />
         </form>
       </main>
     </FormProvider>
