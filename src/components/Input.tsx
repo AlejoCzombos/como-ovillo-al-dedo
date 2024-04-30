@@ -40,7 +40,9 @@ const Input: React.FC<InputProps> = ({
               placeholder={password ? "•••••••••" : ""}
               className={`w-full p-2 bg-secondary-100 rounded-xl ${
                 password ? "bg-secondary-100 border-secondary-300 border-2" : ""
-              } ${fieldState.error ? "border-red-500" : ""}`}
+              } ${isDisabled ? "bg-secondary-200 text-secondary-600" : ""} ${
+                fieldState.error ? "border-red-500" : ""
+              }`}
             />
             {fieldState.error && (
               <span className="text-red-500 text-lg">
