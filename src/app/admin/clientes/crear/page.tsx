@@ -4,8 +4,9 @@ import BigButton from "@/components/BigButton";
 import Input from "@/components/Input";
 import toast from "react-hot-toast";
 import { useForm, FormProvider, SubmitHandler } from "react-hook-form";
-import { redirect, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { createClient } from "@/utils/api.client";
+import { useEffect } from "react";
 
 type FormValues = {
   firstname: string;
@@ -23,6 +24,17 @@ export default function CrearCliente() {
   const methods = useForm<FormValues>();
   const { handleSubmit, reset } = methods;
   const router = useRouter();
+
+  useEffect(() => {
+    const newToast = toast.loading("Cargando próximo ID de cliente...");
+    async function fetchNextId() {
+      const response = await fetch("/api/clientes/proximoId");
+      const data = await response.json();
+      reset({ ...data });
+      toast.success("ID de cliente cargado", { id: newToast });
+    }
+    fetchNextId();
+  }, []);
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     const {
@@ -73,6 +85,12 @@ export default function CrearCliente() {
           className="flex flex-col justify-center gap-4 max-w-2xl w-[80%] m-auto"
           onSubmit={handleSubmit(onSubmit)}
         >
+          <Input
+            label="Próximo N° Cliente"
+            name="nextId"
+            type="number"
+            isDisabled={true}
+          />
           <Input
             label="Nombre"
             name="firstname"
