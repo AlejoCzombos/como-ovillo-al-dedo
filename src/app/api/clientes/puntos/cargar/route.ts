@@ -1,15 +1,16 @@
 import { NextResponse } from "next/server"
-import app from "@/lib/firebase/firebase"
-import { getFirestore, doc, getDoc, runTransaction } from "firebase/firestore"
-import { validatePassword } from "@/utils/password-validation";
+import admin from "@/lib/firebase/firebaseAdmin"
+import { validateFirebaseIdToken } from "@/utils/authorizationMiddleware";
 
-const db = getFirestore(app)
+const db = admin.firestore()
 
 export async function POST(request: Request) {
     try{
-        if (!await validatePassword(request)) {
-            return NextResponse.json({ message: "Contraseña incorrecta" }, { status: 401 });
+        const idToken = await validateFirebaseIdToken(request)
+        if (!idToken) {
+        return NextResponse.json({ message: 'Unauthorized' }, { status: 403 })
         }
+
         const body = await request.json();
         const { cliente_id: clientId, monto: amount } = body;
 
@@ -17,32 +18,29 @@ export async function POST(request: Request) {
             return NextResponse.json({ message: 'Faltan parámetros' }, { status: 406 })
         }
 
-        const clientRef = doc(db, `clientes/${clientId}`);
-        const clientSnapshot = await getDoc(clientRef);
+        const clientRef = db.collection("clientes").doc(clientId)
+        const client = await clientRef.get()
 
-        if (!clientSnapshot.exists()) {
-            return NextResponse.json({ message: 'Cliente no encontrado' }, { status: 404 });
+        if (!client.exists) {
+            return NextResponse.json({ message: 'Cliente no encontrado' }, { status: 404 })
         }
         
         let newPoints;
-        await runTransaction(db, async (transaction) => {
-            const metadataRef = doc(db, "metadata/puntos")
+        await db.runTransaction(async (transaction) => {
+            const metadataRef = db.collection("metadata").doc("puntos")
             const pointsMetadata = await transaction.get(metadataRef)
             
             const percentage = (pointsMetadata.data()?.porcentaje) / 100
             const points = amount * percentage
             
             const client = await transaction.get(clientRef)
-            if (!client.exists()) {
-                return 
-            }
             
-            newPoints = Math.round(client.data().puntos + points)
+            newPoints = Math.round(client.data()?.puntos + points)
             
             await transaction.update(clientRef, { puntos: newPoints })
         });
 
-        const clientName = clientSnapshot.data().nombre
+        const clientName = client.data()?.nombre
 
         return NextResponse.json({currentPoints: newPoints, name: clientName}, { status: 200 })
     }catch(e){

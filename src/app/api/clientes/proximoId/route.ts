@@ -1,14 +1,27 @@
 import { NextResponse } from "next/server"
-import app from "@/lib/firebase/firebase"
-import { getFirestore, collection, getDocs, doc, getDoc } from "firebase/firestore"
+import admin from "@/lib/firebase/firebaseAdmin"
+import { validateFirebaseIdToken } from "@/utils/authorizationMiddleware";
 
-const db = getFirestore(app)
+const db = admin.firestore()
 
-export async function GET() {
+export async function GET(request: Request) {
     try{
-        const metadataRef = doc(db, "metadata/cliente_id")
-        const metadata = await getDoc(metadataRef)
-        const nextId = metadata.data()?.ultimo + 1
+        const idToken = await validateFirebaseIdToken(request)
+        if (!idToken) {
+        return NextResponse.json({ message: 'Unauthorized' }, { status: 403 })
+        }
+        
+        const metadataRef = db.collection("metadata").doc("cliente_id")
+        const metadata = await metadataRef.get()
+
+        if (!metadata.exists){
+            return NextResponse.json({ message: 'Metadata no encontrada' }, { status: 404 })
+        }
+
+        const clientIdData = metadata.data()
+
+        const ultimoId = clientIdData?.ultimo
+        const nextId = ultimoId + 1
 
         return NextResponse.json({ nextId: nextId }, { status: 200 })
     }
