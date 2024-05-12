@@ -5,9 +5,10 @@ import Input from "@/components/Input";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useForm, FormProvider, SubmitHandler } from "react-hook-form";
-import { updateClient } from "@/utils/api.client";
+import { getClientComplete, updateClient } from "@/utils/api.client";
 import { useRouter } from "next/navigation";
 import ClientSearchForm from "@/components/ClientSearchForm";
+import useAuthStore from "@/lib/store/authStore";
 
 type FormValues = {
   clientId: number;
@@ -32,22 +33,13 @@ export default function ModificarCliente() {
   const [client, setClient] = useState<Cliente>();
   const [password, setPassword] = useState<string>("");
   const methodsModifyClient = useForm<FormValues>();
+  const token = useAuthStore((state) => state.token) || "";
   const { handleSubmit: handleSubmitModifyClient } = methodsModifyClient;
 
   const router = useRouter();
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
-    const {
-      firstname,
-      lastName,
-      DNI,
-      email,
-      phone,
-      address,
-      city,
-      postcode,
-      clientId,
-    } = data;
+    const { firstname, lastName, DNI, email, phone, address, city, postcode, clientId } = data;
 
     const clientBody = {
       nombre: firstname,
@@ -63,7 +55,7 @@ export default function ModificarCliente() {
     };
 
     const toastPromise = toast.loading("Modificando cliente...");
-    const response = await updateClient(clientId, password, clientBody);
+    const response = await updateClient(clientId, token, clientBody);
 
     if (response.status === 200) {
       toast.success("Cliente modificado", { id: toastPromise });
@@ -88,11 +80,7 @@ export default function ModificarCliente() {
         DNI,
         correo: email,
         celular: phone,
-        localizacion: {
-          direccion: address,
-          ciudad: city,
-          codigo_postal: postcode,
-        },
+        localizacion: { direccion: address, ciudad: city, codigo_postal: postcode },
       } = client;
       methodsModifyClient.reset({
         clientId,
@@ -114,9 +102,7 @@ export default function ModificarCliente() {
     setPassword(password);
 
     const toastPromise = toast.loading("Buscando cliente...");
-    const data = await fetch(
-      `/api/clientes/${clientId}/completo?password=${password}`
-    );
+    const data = await getClientComplete(clientId, token);
 
     const response = await data.json();
     if (data.status === 200) {
@@ -146,18 +132,8 @@ export default function ModificarCliente() {
             onSubmit={handleSubmitModifyClient(onSubmit)}
           >
             <div className="flex gap-5">
-              <Input
-                label="N° Cliente"
-                name="clientId"
-                type="number"
-                isDisabled={true}
-              />
-              <Input
-                label="Puntos"
-                name="points"
-                type="number"
-                isDisabled={true}
-              />
+              <Input label="N° Cliente" name="clientId" type="number" isDisabled={true} />
+              <Input label="Puntos" name="points" type="number" isDisabled={true} />
             </div>
             <Input
               label="Nombre"

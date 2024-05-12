@@ -12,8 +12,7 @@ export default function CanjearPuntos() {
   const { result, setIsOpen, isOpen, setResult } = useQr() as qrState;
   const [idClientIsOpen, setIdClientIsOpen] = useState<boolean>(false);
   const [wasCharged, setWasCharged] = useState<boolean>(false);
-  const [updatePointsResponse, setUpdatePointsResponse] =
-    useState<UpdatePointsResponse>();
+  const [updatePointsResponse, setUpdatePointsResponse] = useState<UpdatePointsResponse>();
 
   const handleClick = () => {
     setIsOpen(true);
@@ -23,16 +22,13 @@ export default function CanjearPuntos() {
     const { amount, password } = formData;
 
     const toastPromise = toast.loading("Cargando puntos...");
-    const data = await fetch(
-      `/api/clientes/puntos/canjear?password=${password}`,
-      {
-        method: "POST",
-        body: JSON.stringify({ puntos: amount, cliente_id: result }),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    const data = await fetch(`/api/clientes/puntos/canjear?password=${password}`, {
+      method: "POST",
+      body: JSON.stringify({ puntos: amount, cliente_id: result }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
 
     const response = await data.json();
     if (data.status === 200) {
@@ -46,7 +42,7 @@ export default function CanjearPuntos() {
     } else if (data.status === 404) {
       toast.error("El cliente no existe", { id: toastPromise });
     } else {
-      toast.error("Error al cargar los puntos", { id: toastPromise });
+      toast.error("Error al canjear los puntos", { id: toastPromise });
     }
 
     setResult("");
@@ -62,10 +58,7 @@ export default function CanjearPuntos() {
       {!result && !wasCharged && (
         <section className="flex flex-col items-center justify-center gap-8 w-full max-w-md px-5 sm:px-0">
           <BigButton text="ESCANEAR CON QR" onClick={handleClick} />
-          <BigButton
-            text="CANJEAR POR NUMERO DE CLIENTE"
-            onClick={() => setIdClientIsOpen(true)}
-          />
+          <BigButton text="CANJEAR POR NUMERO DE CLIENTE" onClick={() => setIdClientIsOpen(true)} />
         </section>
       )}
       {result && (
@@ -82,10 +75,7 @@ export default function CanjearPuntos() {
             ¡Puntos canjeados correctamente!
           </p>
           <p className="text-white font-semibold text-2xl">
-            <span className="text-secondary-500">
-              {updatePointsResponse?.name}
-            </span>{" "}
-            ahora tiene:
+            <span className="text-secondary-500">{updatePointsResponse?.name}</span> ahora tiene:
           </p>
           <p className="text-secondary-500 text-4xl font-semibold">
             {updatePointsResponse?.currentPoints} puntos
@@ -93,9 +83,7 @@ export default function CanjearPuntos() {
         </section>
       )}
       {isOpen && <ModalQr />}
-      {idClientIsOpen && (
-        <ModalIdClient isOpen={idClientIsOpen} setIsOpen={setIdClientIsOpen} />
-      )}
+      {idClientIsOpen && <ModalIdClient isOpen={idClientIsOpen} setIsOpen={setIdClientIsOpen} />}
     </main>
   );
 }
