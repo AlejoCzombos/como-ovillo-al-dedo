@@ -1,77 +1,77 @@
-import { NextResponse } from "next/server"
-import app from "@/lib/firebase/firebase"
-import { getFirestore, getDoc, updateDoc, doc, deleteDoc, runTransaction } from "firebase/firestore"
-import { validatePassword } from "@/utils/password-validation";
+import { NextResponse } from "next/server";
+import admin from "@/lib/firebase/firebaseAdmin";
+import { validateFirebaseIdToken } from "@/utils/authorizationMiddleware";
 
+const db = admin.firestore();
 
-const db = getFirestore(app)
+export async function GET(request: Request, { params }: { params: { id: string } }) {
+  try {
+    const clientId = params.id;
+    const clientRef = db.collection("clientes").doc(String(clientId));
+    const cliente = await clientRef.get();
 
-export async function GET(request: Request, {params} : {params: {id: string}}) {
-  try{
-    const clientRef = doc(db, `clientes/${params.id}`)
-    const clientSnapshot = await getDoc(clientRef)
-
-    if (!clientSnapshot.exists()) {
-      return NextResponse.json({ message: 'Cliente no encontrado' }, { status: 404 })
+    if (!cliente.exists) {
+      return NextResponse.json({ message: "Cliente no encontrado" }, { status: 404 });
     }
 
-    const clientData = clientSnapshot.data();
+    const clientData = cliente.data();
 
     const clientResponse = {
-      firstname: clientData.nombre,
-      points: clientData.puntos
-    }
+      name: clientData?.nombre,
+      currentPoints: clientData?.puntos,
+    };
 
-    return NextResponse.json(clientResponse, { status: 200 })
-  }catch(e){
-    console.log('Error:', e)
-    return NextResponse.json({ message: 'Error al obtener el cliente' }, { status: 500 })
+    return NextResponse.json(clientResponse, { status: 200 });
+  } catch (e) {
+    console.log("Error:", e);
+    return NextResponse.json({ message: "Error al obtener el cliente" }, { status: 500 });
   }
 }
 
-export async function PUT(request: Request, {params} : {params: {id: string}}) {
-  const body = await request.json()
-
-  const clientId = params.id
-
+export async function PUT(request: Request, { params }: { params: { id: string } }) {
   try {
-    if (!await validatePassword(request)) {
-      return NextResponse.json({ message: "Contraseña incorrecta" }, { status: 401 });
-    }
-    const clientRef = doc(db, `clientes/${clientId}`)
-    const client = await getDoc(clientRef)
-
-    if (!client.exists()) {
-      return NextResponse.json({ message: 'Cliente no encontrado' }, { status: 404 })
+    const idToken = await validateFirebaseIdToken(request);
+    if (!idToken) {
+      return NextResponse.json({ message: "Unauthorized" }, { status: 403 });
     }
 
-    await updateDoc(clientRef, body)
+    const body = await request.json();
+    const clientId = params.id;
+    const clientRef = db.collection("clientes").doc(clientId);
+    const cliente = await clientRef.get();
 
-    return NextResponse.json({ message: 'Cliente actualizado' }, { status: 200 })
-  }catch(e){
-    console.log('Error:', e)
-    return NextResponse.json({ message: 'Error al actualizar el cliente' }, { status: 500 })
+    if (!cliente.exists) {
+      return NextResponse.json({ message: "Cliente no encontrado" }, { status: 404 });
+    }
+
+    await clientRef.update(body);
+
+    return NextResponse.json({ message: "Cliente actualizado" }, { status: 200 });
+  } catch (e) {
+    console.log("Error:", e);
+    return NextResponse.json({ message: "Error al actualizar el cliente" }, { status: 500 });
   }
 }
 
-export async function DELETE(request: Request, {params} : {params: {id: string}}) {
-  const clientId = params.id
-
-  try{
-    if (!await validatePassword(request)) {
-      return NextResponse.json({ message: "Contraseña incorrecta" }, { status: 401 });
-    }
-    const clientRef = doc(db, `clientes/${clientId}`)
-    const client = await getDoc(clientRef)
-
-    if (!client.exists()) {
-      return Response.json({ message: 'Cliente no encontrado' }, { status: 404 })
+export async function DELETE(request: Request, { params }: { params: { id: string } }) {
+  try {
+    const idToken = await validateFirebaseIdToken(request);
+    if (!idToken) {
+      return NextResponse.json({ message: "Unauthorized" }, { status: 403 });
     }
 
-    await deleteDoc(clientRef)
-    return Response.json({ message: 'Cliente eliminado' }, { status: 200 })
-  }catch(e){
-    console.log('Error:', e)
-    return Response.json({ message: 'Error al eliminar el cliente' }, { status: 500 })
+    const clientId = params.id;
+    const clientRef = db.collection("clientes").doc(clientId);
+    const cliente = await clientRef.get();
+
+    if (!cliente.exists) {
+      return NextResponse.json({ message: "Cliente no encontrado" }, { status: 404 });
+    }
+
+    await clientRef.delete();
+    return Response.json({ message: "Cliente eliminado" }, { status: 200 });
+  } catch (e) {
+    console.log("Error:", e);
+    return Response.json({ message: "Error al eliminar el cliente" }, { status: 500 });
   }
 }

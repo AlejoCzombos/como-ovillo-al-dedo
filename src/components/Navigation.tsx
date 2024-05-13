@@ -4,17 +4,29 @@ import Image from "next/image";
 import Link from "next/link";
 import logo from "../../public/logo.png";
 import { usePathname, useRouter } from "next/navigation";
-import { qrState, useQr } from "@/lib/store/Qr";
+import { useEffect } from "react";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "@/lib/firebase/firebase";
+import useAuthStore from "@/lib/store/authStore";
 
 export default function Navigation() {
   const pathName = usePathname();
   const route = useRouter();
-  const { setResult } = useQr() as qrState;
+  const setCredentials = useAuthStore((state) => state.setCredentials);
 
   const handleGoBack = () => {
-    setResult("");
     route.back();
   };
+
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setCredentials(user);
+      } else {
+        console.log("user is logged out");
+      }
+    });
+  }, []);
 
   return (
     <nav className="sticky top-0 z-20 w-full shadow-md bg-white h-24 ">
