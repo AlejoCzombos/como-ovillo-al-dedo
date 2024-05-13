@@ -5,30 +5,20 @@ import Input from "@/components/Input";
 import toast from "react-hot-toast";
 import { useForm, FormProvider, SubmitHandler } from "react-hook-form";
 import { useRouter } from "next/navigation";
-import { createClient } from "@/utils/api.client";
+import { createClient, getNextClientId } from "@/utils/api.client";
 import { useEffect } from "react";
-
-type FormValues = {
-  firstname: string;
-  lastName: string;
-  DNI: number;
-  email: string;
-  phone: string;
-  address: string;
-  city: string;
-  postcode: number;
-  password: string;
-};
+import useAuthStore from "@/lib/store/authStore";
 
 export default function CrearCliente() {
-  const methods = useForm<FormValues>();
+  const methods = useForm<FormValuesCreateClient>();
   const { handleSubmit, reset } = methods;
+  const token = useAuthStore((state) => state.token) || "";
   const router = useRouter();
 
   useEffect(() => {
     const newToast = toast.loading("Cargando próximo ID de cliente...");
     async function fetchNextId() {
-      const response = await fetch("/api/clientes/proximoId");
+      const response = await getNextClientId(token);
       const data = await response.json();
       reset({ ...data });
       toast.success("ID de cliente cargado", { id: newToast });
@@ -36,18 +26,8 @@ export default function CrearCliente() {
     fetchNextId();
   }, []);
 
-  const onSubmit: SubmitHandler<FormValues> = async (data) => {
-    const {
-      firstname,
-      lastName,
-      DNI,
-      email,
-      phone,
-      address,
-      city,
-      postcode,
-      password,
-    } = data;
+  const onSubmit: SubmitHandler<FormValuesCreateClient> = async (data) => {
+    const { firstname, lastName, DNI, email, phone, address, city, postcode } = data;
 
     const clientData = {
       nombre: firstname,
@@ -63,8 +43,7 @@ export default function CrearCliente() {
     };
 
     const toastPromise = toast.loading("Creando cliente...");
-
-    const response = await createClient(password, clientData);
+    const response = await createClient(token, clientData);
 
     if (response.status === 201) {
       toast.success("Cliente creado", { id: toastPromise });
@@ -77,30 +56,17 @@ export default function CrearCliente() {
   };
   return (
     <FormProvider {...methods}>
-      <main className="min-h-[85vh] w-full m-auto py-5">
-        <h2 className="text-4xl text-center w-[80%] text-white font-semibold m-auto py-5">
+      <main className="flex justify-center min-h-[85vh] w-full m-auto relative py-5">
+        <h2 className="text-4xl text-center w-[80%] text-white font-semibold absolute top-20 left-1/2 transform -translate-x-1/2">
           Crear Cliente
         </h2>
         <form
-          className="flex flex-col justify-center gap-4 max-w-2xl w-[80%] m-auto"
+          className="flex flex-col justify-center gap-4 max-w-2xl w-[80%] m-auto mt-40"
           onSubmit={handleSubmit(onSubmit)}
         >
-          <Input
-            label="Próximo N° Cliente"
-            name="nextId"
-            type="number"
-            isDisabled={true}
-          />
-          <Input
-            label="Nombre"
-            name="firstname"
-            rules={{ required: "Este campo es requerido" }}
-          />
-          <Input
-            label="Apellido"
-            name="lastName"
-            rules={{ required: "Este campo es requerido" }}
-          />
+          <Input label="Próximo N° Cliente" name="nextId" type="number" isDisabled={true} />
+          <Input label="Nombre" name="firstname" rules={{ required: "Este campo es requerido" }} />
+          <Input label="Apellido" name="lastName" rules={{ required: "Este campo es requerido" }} />
           <Input
             label="DNI"
             name="DNI"
@@ -144,13 +110,6 @@ export default function CrearCliente() {
                 message: "El código postal debe tener exactamente 5 dígitos",
               },
             }}
-          />
-          <Input
-            label="Contraseña"
-            name="password"
-            type="password"
-            password
-            rules={{ required: "Este campo es requerido" }}
           />
           <BigButton text="CREAR CLIENTE" className="mt-3" />
         </form>

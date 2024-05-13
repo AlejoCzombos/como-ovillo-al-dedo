@@ -10,35 +10,15 @@ import { useRouter } from "next/navigation";
 import ClientSearchForm from "@/components/ClientSearchForm";
 import useAuthStore from "@/lib/store/authStore";
 
-type FormValues = {
-  clientId: number;
-  points: number;
-  firstname: string;
-  lastName: string;
-  DNI: number;
-  email: string;
-  phone: string;
-  address: string;
-  city: string;
-  postcode: number;
-  password: string;
-};
-
-type FormValuesFindClient = {
-  clientId: number;
-  password: string;
-};
-
 export default function ModificarCliente() {
   const [client, setClient] = useState<Cliente>();
-  const [password, setPassword] = useState<string>("");
-  const methodsModifyClient = useForm<FormValues>();
+  const methodsModifyClient = useForm<FormValuesModifyClient>();
   const token = useAuthStore((state) => state.token) || "";
   const { handleSubmit: handleSubmitModifyClient } = methodsModifyClient;
 
   const router = useRouter();
 
-  const onSubmit: SubmitHandler<FormValues> = async (data) => {
+  const onSubmit: SubmitHandler<FormValuesModifyClient> = async (data) => {
     const { firstname, lastName, DNI, email, phone, address, city, postcode, clientId } = data;
 
     const clientBody = {
@@ -98,8 +78,7 @@ export default function ModificarCliente() {
   }, [client]);
 
   const onSubmitFindCLient = async (formData: ClientSearchForm) => {
-    const { clientId, password } = formData;
-    setPassword(password);
+    const { clientId } = formData;
 
     const toastPromise = toast.loading("Buscando cliente...");
     const data = await getClientComplete(clientId, token);
@@ -112,6 +91,8 @@ export default function ModificarCliente() {
       setClient(response);
     } else if (data.status === 401) {
       toast.error("Contraseña incorrecta", { id: toastPromise });
+    } else if (data.status === 403) {
+      toast.error("No tienes permisos para realizar esta acción", { id: toastPromise });
     } else if (data.status === 404) {
       toast.error("El cliente no existe", { id: toastPromise });
     } else {

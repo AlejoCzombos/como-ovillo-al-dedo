@@ -16,21 +16,40 @@ interface Cliente {
   puntos: number;
 }
 
-interface passwordForm{
-  password: string;
-}
+type FormValuesCreateClient = {
+  firstname: string;
+  lastName: string;
+  DNI: number;
+  email: string;
+  phone: string;
+  address: string;
+  city: string;
+  postcode: number;
+};
 
-interface ClientSearchForm{
+type FormValuesModifyClient = {
   clientId: number;
-  password: string;
+  points: number;
+  firstname: string;
+  lastName: string;
+  DNI: number;
+  email: string;
+  phone: string;
+  address: string;
+  city: string;
+  postcode: number;
+};
+
+interface ClientSearchForm {
+  clientId: number;
 }
 
-interface UpdatePointsForm{
+interface UpdatePointsForm {
   amount: number;
-  password: string;
+  clientId: number;
 }
 
-interface UpdatePointsResponse{
+interface clientData {
   currentPoints: number;
   name: string;
 }

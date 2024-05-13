@@ -10,7 +10,6 @@ export async function middleware(request: NextRequest) {
 
     // Acceder a las propiedades del objeto auth
     const isAuthenticated = authValues.isAuthenticated;
-    const user = authValues.user;
     const token = authValues.token;
 
     const decodedToken = JSON.parse(atob(token.split(".")[1]));
@@ -19,15 +18,21 @@ export async function middleware(request: NextRequest) {
     if (isAuthenticated && isTokenValid) {
       return NextResponse.next();
     } else {
-      url.pathname = "/puntos/test";
+      url.pathname = "/admin/iniciar-sesion";
       return NextResponse.redirect(url);
     }
   } else {
-    url.pathname = "/puntos/test";
+    url.pathname = "/admin/iniciar-sesion";
     return NextResponse.redirect(url);
   }
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/dashboard/:path*"],
+  matcher: [
+    "/admin",
+    "/admin/clientes",
+    "/admin/clientes/:path*",
+    "/admin/canjear-puntos",
+    "/admin/cargar-puntos",
+  ],
 };

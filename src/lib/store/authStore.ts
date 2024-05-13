@@ -1,13 +1,14 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { auth } from "@/lib/firebase/firebase";
-import { signInWithEmailAndPassword, signOut } from "firebase/auth";
+import { User, UserCredential, signInWithEmailAndPassword, signOut } from "firebase/auth";
 import Cookies from "js-cookie";
 
 interface AuthState {
   isAuthenticated: boolean;
   user: null | object;
   token: null | string;
+  setCredentials: (userCredential: User) => void;
   getToken: () => string | null;
   login: (email: string, password: string) => Promise<boolean>;
   register: (userInfo: FormData) => Promise<void>;
@@ -23,12 +24,23 @@ const useAuthStore = create<AuthState>()(
       getToken: () => {
         return get().token;
       },
+      setCredentials: (user) => {
+        const newState = {
+          isAuthenticated: true,
+          token: user.accessToken,
+        };
+        console.log(user);
+
+        Cookies.set("auth", JSON.stringify(newState), {
+          expires: 7,
+        });
+        set(newState);
+      },
       login: async (email, password) => {
         return signInWithEmailAndPassword(auth, email, password)
           .then((userCredential) => {
             const newState = {
               isAuthenticated: true,
-              user: userCredential.user,
               token: userCredential.user.accessToken,
             };
 
@@ -47,6 +59,7 @@ const useAuthStore = create<AuthState>()(
       },
       logout: async () => {
         await signOut(auth);
+        Cookies.remove("auth");
         set({
           isAuthenticated: false,
           user: null,

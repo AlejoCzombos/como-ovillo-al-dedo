@@ -19,26 +19,26 @@ export default function UpdatePointsForm({
   isCash,
 }: PointsUploadFormProps) {
   const [amount, setAmount] = useState<number>();
-  const [password, setPassword] = useState<string>("");
+  const [clientId, setClientId] = useState<number>();
   const [error, setError] = useState<string>("");
 
   const handleChangeAmount = (e: React.ChangeEvent<HTMLInputElement>) => {
     setAmount(parseInt(e.target.value));
   };
 
-  const handleChangePassword = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPassword(e.target.value);
+  const handleChangeClientId = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setClientId(parseInt(e.target.value));
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!amount || !password) {
+    if (!amount || !clientId) {
       setError("Por favor completa todos los campos");
       return;
     }
     const response = {
       amount,
-      password,
+      clientId,
     };
     onSubmit(response);
   };
@@ -48,6 +48,20 @@ export default function UpdatePointsForm({
       onSubmit={handleSubmit}
       className="flex flex-col items-center justify-center gap-2 w-full max-w-md px-5 sm:px-0"
     >
+      <div className="w-full text-2xl">
+        <label className="text-white" htmlFor="clientId">
+          N° Cliente:
+        </label>
+        <input
+          name="clientId"
+          type="number"
+          placeholder="14"
+          value={clientId}
+          className="w-full p-2 bg-secondary-100 rounded-xl"
+          onChange={handleChangeClientId}
+        />
+        {error && <p className="text-red-500 text-lg">{error}</p>}
+      </div>
       <div className="w-full text-2xl">
         <label className="text-white" htmlFor="amount">
           {labelTitule}:
@@ -70,21 +84,7 @@ export default function UpdatePointsForm({
           />
         </div>
       </div>
-      <div className="w-full text-2xl mb-4">
-        <label className="text-white" htmlFor="password">
-          Contraseña:
-        </label>
-        <input
-          type="password"
-          id="password"
-          placeholder="•••••••••"
-          value={password}
-          onChange={handleChangePassword}
-          className="w-full p-1 px-2 bg-secondary-100 border-secondary-300 border-2 rounded-xl text-3xl"
-        />
-        {error && <p className="text-red-500">{error}</p>}
-      </div>
-      <BigButton text={buttonLabel} />
+      <BigButton text={buttonLabel} className="mt-5" />
     </form>
   );
 }
