@@ -1,8 +1,12 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { auth } from "@/lib/firebase/firebase";
-import { User, UserCredential, signInWithEmailAndPassword, signOut } from "firebase/auth";
+import { User as FirebaseUser, signInWithEmailAndPassword, signOut } from "firebase/auth";
 import Cookies from "js-cookie";
+
+interface User extends FirebaseUser {
+  accessToken?: string;
+}
 
 interface AuthState {
   isAuthenticated: boolean;
@@ -27,9 +31,8 @@ const useAuthStore = create<AuthState>()(
       setCredentials: (user) => {
         const newState = {
           isAuthenticated: true,
-          token: user.accessToken,
+          token: user.accessToken || "",
         };
-        console.log(user);
 
         Cookies.set("auth", JSON.stringify(newState), {
           expires: 7,
@@ -41,7 +44,7 @@ const useAuthStore = create<AuthState>()(
           .then((userCredential) => {
             const newState = {
               isAuthenticated: true,
-              token: userCredential.user.accessToken,
+              token: (userCredential.user as any).accessToken,
             };
 
             Cookies.set("auth", JSON.stringify(newState), {
