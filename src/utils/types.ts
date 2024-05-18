@@ -16,6 +16,14 @@ interface Cliente {
   puntos: number;
 }
 
+type FormValuesCreateProduct = {
+  name: string;
+  pointsAmount: number;
+  discountPercentage: number;
+  category: string;
+  image: string;
+};
+
 type FormValuesCreateClient = {
   firstname: string;
   lastName: string;

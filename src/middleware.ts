@@ -31,6 +31,7 @@ export const config = {
   matcher: [
     "/admin",
     "/admin/clientes",
+    "/admin/productos",
     "/admin/clientes/:path*",
     "/admin/canjear-puntos",
     "/admin/cargar-puntos",
