@@ -5,7 +5,7 @@ import Input from "@/components/Input";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useForm, FormProvider, SubmitHandler } from "react-hook-form";
-import { getClientComplete, updateClient } from "@/utils/api.client";
+import { getClientComplete, updateClient } from "@/utils/api.clients";
 import { useRouter } from "next/navigation";
 import ClientSearchForm from "@/components/ClientSearchForm";
 import useAuthStore from "@/lib/store/authStore";

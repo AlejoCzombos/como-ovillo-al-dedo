@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import useAuthStore from "@/lib/store/authStore";
-import { getAllClients } from "@/utils/api.client";
+import { getAllClients } from "@/utils/api.clients";
 
 export default function ListarClientes() {
   const [clients, setClients] = useState<Cliente[]>();

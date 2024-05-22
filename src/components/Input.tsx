@@ -32,22 +32,20 @@ const Input: React.FC<InputProps> = ({
         render={({ field, fieldState }) => (
           <>
             <input
-              disabled={isDisabled}
               {...field}
               type={type}
               id={name}
-              defaultValue={""}
               placeholder={password ? "•••••••••" : ""}
+              disabled={isDisabled}
               className={`w-full p-2 bg-secondary-100 rounded-xl ${
                 password ? "bg-secondary-100 border-secondary-300 border-2" : ""
               } ${isDisabled ? "bg-secondary-200 text-secondary-600" : ""} ${
                 fieldState.error ? "border-red-500" : ""
               }`}
             />
+
             {fieldState.error && (
-              <span className="text-red-500 text-lg">
-                {fieldState.error.message}
-              </span>
+              <span className="text-red-500 text-lg">{fieldState.error.message}</span>
             )}
           </>
         )}
@@ -55,5 +53,4 @@ const Input: React.FC<InputProps> = ({
     </div>
   );
 };
-
 export default Input;

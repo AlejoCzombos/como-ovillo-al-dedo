@@ -21,7 +21,7 @@ type FormValuesCreateProduct = {
   pointsAmount: number;
   discountPercentage: number;
   category: string;
-  image: string;
+  image: FileList;
 };
 
 type FormValuesCreateClient = {

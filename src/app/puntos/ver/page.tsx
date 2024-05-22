@@ -1,7 +1,7 @@
 "use client";
 
 import ClientSearchForm from "@/components/ClientSearchForm";
-import { getClientPoints } from "@/utils/api.client";
+import { getClientPoints } from "@/utils/api.clients";
 import { useState } from "react";
 import toast from "react-hot-toast";
 

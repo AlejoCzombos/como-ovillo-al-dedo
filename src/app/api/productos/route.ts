@@ -1,8 +1,12 @@
 import { NextResponse } from "next/server";
 import admin from "@/lib/firebase/firebaseAdmin";
 import { validateFirebaseIdToken } from "@/utils/authorizationMiddleware";
+import { getDownloadURL } from "firebase-admin/storage";
+import fs from "fs";
+import path from "path";
 
 const db = admin.firestore();
+const serverBucket = admin.storage();
 
 export async function GET(request: Request) {
   try {
@@ -40,16 +44,17 @@ export async function POST(request: Request) {
 
     const body = await request.json();
 
-    const product = {
+    const productData = {
       ...body,
       imagen: null,
     };
 
     const newProductRef = db.collection("productos").doc();
+    newProductRef.set(productData);
 
-    newProductRef.set(product);
+    const product = await newProductRef.get();
 
-    return NextResponse.json({ message: "producto creado" }, { status: 201 });
+    return NextResponse.json({ id: product.id }, { status: 201 });
   } catch (e) {
     console.log("Transaction failure:", e);
     return NextResponse.json({ message: "Error al crear el producto" }, { status: 500 });
