@@ -16,7 +16,25 @@ interface Cliente {
   puntos: number;
 }
 
+interface Product {
+  id: string;
+  nombre: string;
+  categoria: string;
+  porcentajeDescuento: number;
+  puntos: number;
+  imagen: string;
+}
+
 type FormValuesCreateProduct = {
+  name: string;
+  pointsAmount: number;
+  discountPercentage: number;
+  category: string;
+  image: FileList;
+};
+
+type FormValuesModifyProduct = {
+  productId: string;
   name: string;
   pointsAmount: number;
   discountPercentage: number;
@@ -50,6 +68,10 @@ type FormValuesModifyClient = {
 
 interface ClientSearchForm {
   clientId: number;
+}
+
+interface ProductSearchForm {
+  productId: string;
 }
 
 interface UpdatePointsForm {

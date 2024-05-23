@@ -25,18 +25,18 @@ export default function CrearProducto() {
     const productBody = {
       nombre: name,
       categoria: category,
-      descuento: discountPercentage,
+      porcentajeDescuento: discountPercentage,
       puntos: pointsAmount,
     };
 
     const toastPromise = toast.loading("Creando producto...");
-    const responseCreate = await createProduct(token, { productBody });
+    const responseCreate = await createProduct(productBody, token);
 
     console.log("Response:", responseCreate);
 
     if (responseCreate.status === 201) {
       const productData = await responseCreate.json();
-      const responseImage = await addImageToProduct(productData.id, token, image);
+      const responseImage = await addImageToProduct(productData.id, image, token);
 
       console.log("Response Image:", responseImage);
 
@@ -89,10 +89,14 @@ export default function CrearProducto() {
               type="file"
               {...methods.register("image", {
                 required: "La imagen es requerida",
-                validate: {
-                  size: (value) => value[0].size < 1000000 || "La imagen debe ser menor a 1MB",
-                  type: (value) =>
-                    value[0].type.includes("image") || "El archivo debe ser una imagen",
+                validate: (value) => {
+                  const acceptedFormats = ["image/*"];
+                  if (!acceptedFormats.includes(value[0].type)) {
+                    return "Formato de imagen no válido";
+                  }
+                  if (value[0].size > 1000000) {
+                    return "La imagen debe ser menor a 1MB";
+                  }
                 },
               })}
             />

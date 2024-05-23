@@ -14,8 +14,8 @@ export default function Home() {
         <Link href="/admin/productos/modificar" className="w-full">
           <BigButton text="MODIFICAR PRODUCTO" />
         </Link>
-        <Link href="/admin/productos/listar" className="w-full">
-          <BigButton text="LISTA DE PRODUCTOS" />
+        <Link href="/admin/productos/eliminar" className="w-full">
+          <BigButton text="ELIMINAR PRODUCTO" />
         </Link>
       </section>
     </main>

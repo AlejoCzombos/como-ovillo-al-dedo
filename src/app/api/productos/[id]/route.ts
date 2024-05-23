@@ -19,7 +19,7 @@ export async function GET(request: Request, { params }: { params: { id: string }
       return NextResponse.json({ message: "Producto no encontrado" }, { status: 404 });
     }
 
-    return NextResponse.json(product, { status: 200 });
+    return NextResponse.json(product.data(), { status: 200 });
   } catch (e) {
     console.log("Error:", e);
     return NextResponse.json({ message: "Error al obtener el producto" }, { status: 500 });

@@ -18,17 +18,7 @@ export async function GET(request: Request) {
     const snapshot = await db.collection("productos").get();
     const productos = snapshot.docs.map((doc) => doc.data());
 
-    const productosResponse = productos
-      .map((producto) => ({
-        id: producto.id,
-        nombre: producto.nombre,
-        precio: producto.precio,
-        stock: producto.stock,
-        image: producto.image,
-      }))
-      .sort((a, b) => a.id - b.id);
-
-    return NextResponse.json(productosResponse, { status: 200 });
+    return NextResponse.json(productos, { status: 200 });
   } catch (e) {
     console.log("Error:", e);
     return NextResponse.json({ message: "Error al obtener los productos" }, { status: 500 });
@@ -50,7 +40,7 @@ export async function POST(request: Request) {
     };
 
     const newProductRef = db.collection("productos").doc();
-    newProductRef.set(productData);
+    newProductRef.set({ ...productData, id: newProductRef.id });
 
     const product = await newProductRef.get();
 

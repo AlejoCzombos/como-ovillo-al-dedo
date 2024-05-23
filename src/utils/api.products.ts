@@ -1,5 +1,5 @@
-export const getProductById = async (token: string) => {
-  const response = await fetch(`/api/productos`, {
+export const getProductById = async (productId: string, token: string) => {
+  const response = await fetch(`/api/productos/${productId}`, {
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
@@ -18,7 +18,7 @@ export const getAllProducts = async (token: string) => {
   return response;
 };
 
-export const createProduct = async (token: string, productData: any) => {
+export const createProduct = async (productData: any, token: string) => {
   const response = await fetch(`/api/productos`, {
     method: "POST",
     headers: {
@@ -30,9 +30,17 @@ export const createProduct = async (token: string, productData: any) => {
   return response;
 };
 
-export const addImageToProduct = async (productId: string, token: string, image: File) => {
+export const addImageToProduct = async (
+  productId: string,
+  image: File,
+  token: string,
+  update?: boolean
+) => {
   const arrayBuffer = await image.arrayBuffer();
-  const response = await fetch(`/api/productos/${productId}/imagen`, {
+  const URL = update
+    ? `/api/productos/${productId}/imagen?update=true`
+    : `/api/productos/${productId}/imagen`;
+  const response = await fetch(URL, {
     method: "PUT",
     headers: {
       Authorization: `Bearer ${token}`,
@@ -42,7 +50,7 @@ export const addImageToProduct = async (productId: string, token: string, image:
   return response;
 };
 
-export const updateProduct = async (productId: number, token: string, productData: any) => {
+export const updateProduct = async (productId: string, productData: any, token: string) => {
   const response = await fetch(`/api/productos/${productId}`, {
     method: "PUT",
     headers: {
@@ -54,7 +62,7 @@ export const updateProduct = async (productId: number, token: string, productDat
   return response;
 };
 
-export const deleteProduct = async (productId: number, token: string) => {
+export const deleteProduct = async (productId: string, token: string) => {
   const response = await fetch(`/api/productos/${productId}`, {
     method: "DELETE",
     headers: {

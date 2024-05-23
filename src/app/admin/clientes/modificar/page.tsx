@@ -34,6 +34,24 @@ export default function ModificarCliente() {
       },
     };
 
+    if (!client) {
+      return;
+    }
+
+    if (
+      firstname === client.nombre &&
+      lastName === client.apellido &&
+      DNI === client.DNI &&
+      email === client.correo &&
+      phone === client.celular &&
+      address === client.localizacion.direccion &&
+      city === client.localizacion.ciudad &&
+      postcode === client.localizacion.codigo_postal
+    ) {
+      toast.error("No se han realizado cambios");
+      return;
+    }
+
     const toastPromise = toast.loading("Modificando cliente...");
     const response = await updateClient(clientId, token, clientBody);
 
