@@ -20,7 +20,7 @@ export const getAllProducts = async () => {
 export const getAllProductsServer = async () => {
   const response = await fetch(`https://como-ovillo-al-dedo.vercel.app/api/productos`, {
     next: {
-      revalidate: 60,
+      revalidate: 60 * 5,
     },
     headers: {
       "Content-Type": "application/json",

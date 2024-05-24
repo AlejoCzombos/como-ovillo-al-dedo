@@ -11,7 +11,7 @@ const serverBucket = admin.storage();
 export async function GET(request: Request) {
   try {
     const snapshot = await db.collection("productos").get();
-    const productos = snapshot.docs.map((doc) => doc.data());
+    const productos = snapshot.docs.map((doc) => doc.data()).sort((a, b) => a.puntos - b.puntos);
 
     return NextResponse.json(productos, { status: 200 });
   } catch (e) {
