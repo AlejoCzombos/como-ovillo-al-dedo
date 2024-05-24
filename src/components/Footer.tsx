@@ -3,7 +3,7 @@ import { FacebookIcon, InstagramIcon, WhatsAppIcon, YoutubeIcon } from "./Icons/
 export default function Footer() {
   return (
     <footer className="bg-tertiary-300 text-tertiary-900 text-center py-4 flex flex-col justify-center">
-      <p>© {new Date().getFullYear()} Como Ovillo al Dedo</p>
+      <p>© 2024 Como Ovillo al Dedo</p>
       <div className="flex justify-center gap-5 py-3">
         <a href="https://www.facebook.com/comoovilloaldedo" target="_blank" rel="noreferrer">
           <FacebookIcon />
