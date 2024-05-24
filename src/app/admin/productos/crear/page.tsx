@@ -13,6 +13,8 @@ export default function CrearProducto() {
   const {
     handleSubmit,
     formState: { errors },
+    register,
+    watch,
   } = methods;
   const token = useAuthStore((state) => state.token) || "";
   const router = useRouter();
@@ -63,17 +65,30 @@ export default function CrearProducto() {
           onSubmit={handleSubmit(onSubmit)}
         >
           <Input label="Nombre" name="name" rules={{ required: "El nombre es requerido" }} />
-          <Input
-            label="Categoria"
-            name="category"
-            rules={{ required: "La categoría es requerido" }}
-          />
-          <Input
-            label="Porcentaje de descuento"
-            name="discountPercentage"
-            type="number"
-            rules={{ required: "El porcentaje de descuento es requerido" }}
-          />
+          <div className="w-full text-2xl">
+            <label className="text-white" htmlFor="clientId">
+              Categoría:
+            </label>
+            <select
+              className="w-full p-2 bg-secondary-100 rounded-xl"
+              {...register("category", { required: "La categoría es requerida" })}
+            >
+              <option disabled value="">
+                Seleccione un producto
+              </option>
+              <option value="canjeDirecto">Canje directo</option>
+              <option value="puntosyDinero">Puntos + dinero</option>
+            </select>
+            {errors.category && <p className="text-red-500 text-lg">{errors.category.message}</p>}
+          </div>
+          {watch("category") === "puntosyDinero" && (
+            <Input
+              label="Porcentaje de descuento"
+              name="discountPercentage"
+              type="number"
+              rules={{ required: "El porcentaje de descuento es requerido" }}
+            />
+          )}
           <Input
             label="Puntos"
             name="pointsAmount"
@@ -87,16 +102,20 @@ export default function CrearProducto() {
             <input
               className="w-full p-2 bg-secondary-100 rounded-xl"
               type="file"
+              accept="image/*"
               {...methods.register("image", {
                 required: "La imagen es requerida",
                 validate: (value) => {
-                  const acceptedFormats = ["image/*"];
-                  if (!acceptedFormats.includes(value[0].type)) {
-                    return "Formato de imagen no válido";
+                  if (value) {
+                    // const acceptedFormats = ["image/*"];
+                    // if (!acceptedFormats.includes(value[0].type)) {
+                    //   return "Formato de imagen no válido";
+                    // }
+                    // if (value[0].size > 1000000) {
+                    //   return "La imagen debe ser menor a 1MB";
+                    // }
                   }
-                  if (value[0].size > 1000000) {
-                    return "La imagen debe ser menor a 1MB";
-                  }
+                  return true;
                 },
               })}
             />

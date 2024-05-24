@@ -8,11 +8,22 @@ export const getProductById = async (productId: string, token: string) => {
   return response;
 };
 
-export const getAllProducts = async (token: string) => {
+export const getAllProducts = async () => {
   const response = await fetch(`/api/productos`, {
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
+    },
+  });
+  return response;
+};
+
+export const getAllProductsServer = async () => {
+  const response = await fetch(`http://localhost:3000/api/productos`, {
+    next: {
+      revalidate: 60,
+    },
+    headers: {
+      "Content-Type": "application/json",
     },
   });
   return response;

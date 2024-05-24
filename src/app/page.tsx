@@ -8,6 +8,9 @@ export default function Home() {
         <Link href="/puntos/ver" className="w-full">
           <BigButton text="CONSULTAR PUNTOS" />
         </Link>
+        <Link href="/productos" className="w-full">
+          <BigButton text="VER PRODUCTOS" />
+        </Link>
       </section>
     </main>
   );

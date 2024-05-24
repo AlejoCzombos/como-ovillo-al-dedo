@@ -10,11 +10,6 @@ const serverBucket = admin.storage();
 
 export async function GET(request: Request) {
   try {
-    const idToken = await validateFirebaseIdToken(request);
-    if (!idToken) {
-      return NextResponse.json({ message: "Unauthorized" }, { status: 403 });
-    }
-
     const snapshot = await db.collection("productos").get();
     const productos = snapshot.docs.map((doc) => doc.data());
 

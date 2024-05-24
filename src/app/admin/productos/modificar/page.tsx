@@ -17,6 +17,8 @@ export default function ModificarProducto() {
   const {
     handleSubmit,
     formState: { errors },
+    register,
+    watch,
   } = methodsModifyProduct;
 
   const router = useRouter();
@@ -131,17 +133,30 @@ export default function ModificarProducto() {
             onSubmit={handleSubmit(onSubmit)}
           >
             <Input label="Nombre" name="name" rules={{ required: "Este campo es requerido" }} />
-            <Input
-              label="Categoria"
-              name="category"
-              rules={{ required: "Este campo es requerido" }}
-            />
-            <Input
-              label="Porcentaje de Descuento"
-              name="discountPercentage"
-              type="number"
-              rules={{ required: "Este campo es requerido" }}
-            />
+            <div className="w-full text-2xl">
+              <label className="text-white" htmlFor="clientId">
+                Categoría:
+              </label>
+              <select
+                className="w-full p-2 bg-secondary-100 rounded-xl"
+                {...register("category", { required: "La categoría es requerida" })}
+              >
+                <option disabled value="">
+                  Seleccione un producto
+                </option>
+                <option value="canjeDirecto">Canje directo</option>
+                <option value="puntosyDinero">Puntos + dinero</option>
+              </select>
+              {errors.category && <p className="text-red-500 text-lg">{errors.category.message}</p>}
+            </div>
+            {watch("category") === "puntosyDinero" && (
+              <Input
+                label="Porcentaje de descuento"
+                name="discountPercentage"
+                type="number"
+                rules={{ required: "El porcentaje de descuento es requerido" }}
+              />
+            )}
             <Input
               label="Puntos"
               name="pointsAmount"
@@ -177,7 +192,11 @@ export default function ModificarProducto() {
               <label className="text-white" htmlFor="image">
                 Imagen actual:
               </label>
-              <img src={product.imagen} alt="Producto" />
+              <img
+                src={product.imagen}
+                alt="Producto"
+                className="aspect-square object-cover w-full max-w-sm md:max-w-lg m-auto"
+              />
             </div>
             <BigButton text="ACTUALIZAR PRODUCTO" className="mt-3" />
           </form>

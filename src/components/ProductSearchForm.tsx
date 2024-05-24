@@ -3,7 +3,6 @@
 import React, { useEffect, useState } from "react";
 import BigButton from "./BigButton";
 import { getAllProducts } from "@/utils/api.products";
-import useAuthStore from "@/lib/store/authStore";
 import toast from "react-hot-toast";
 
 export default function ProductSearchForm({
@@ -16,12 +15,11 @@ export default function ProductSearchForm({
   const [productId, setProductId] = useState<string>();
   const [error, setError] = useState<string>("");
   const [products, setProducts] = useState<Product[]>();
-  const token = useAuthStore((state) => state.token) || "";
 
   useEffect(() => {
     async function fetchProducts() {
       const loadingToast = toast.loading("Cargando productos...");
-      const response = await getAllProducts(token);
+      const response = await getAllProducts();
       if (response.status === 200) {
         toast.dismiss(loadingToast);
         const data = await response.json();

@@ -3,6 +3,7 @@ import { Fredoka } from "next/font/google";
 import "./globals.css";
 import Navigation from "@/components/Navigation";
 import { Toaster } from "react-hot-toast";
+import Footer from "@/components/Footer";
 
 const typography = Fredoka({ subsets: ["latin"] });
 
@@ -23,6 +24,7 @@ export default async function RootLayout({
         <Navigation />
         {children}
         <Toaster toastOptions={{ style: { textAlign: "center" } }} />
+        <Footer />
       </body>
     </html>
   );
